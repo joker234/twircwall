@@ -8,6 +8,8 @@ var events = new EventEmitter();
 var twitter = require('twitter');
 var irc = require('irc');
 var _ = require('underscore');
+var Encoder = require('node-html-encoder').Encoder;
+var encoder = new Encoder('entity');
 
 var tweets = [];
 var ircMessages = [];
@@ -105,7 +107,7 @@ var client = new irc.Client('chat.freenode.net', 'kiffelnet', {
 client.addListener('message', function(from, to, message) {
   newIRCMessage({
     'name': from,
-    'text': message,
+    'text': encoder.htmlEncode(message),
     'date': new Date()
   });
 });
