@@ -99,7 +99,7 @@ starttwitter(t);
 
 
 var client = new irc.Client('chat.freenode.net', 'kiffelnet', {
-  channels: ['#ccchh-dev']
+  channels: ['#kif']
 });
 
 client.addListener('message', function(from, to, message) {
@@ -110,4 +110,4 @@ client.addListener('message', function(from, to, message) {
   });
 });
 
-server.listen(3000);
+server.listen(3001);

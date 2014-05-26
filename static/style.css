@@ -35,6 +35,7 @@ div.irc {
 
 div.irc .ircmessage {
   margin-bottom: 5px;
+  font-family: monospace;
 }
 
 div.twitter {
