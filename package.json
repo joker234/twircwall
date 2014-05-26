@@ -6,6 +6,10 @@
   "author": "gnomus",
   "dependencies": {
     "express": "latest",
-    "socket.io": "latest"
+    "socket.io": "latest",
+    "jade": "latest",
+    "twitter": "latest",
+    "irc": "latest",
+    "underscore": "latest"
   }
 }
