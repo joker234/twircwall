@@ -113,12 +113,3 @@ client.addListener('message', function(from, to, message) {
 });
 
 server.listen(3001);
-
-
-setInterval(function() {
-  newIRCMessage({
-    'name': "gnomus",
-    'text': "test",
-    'date': new Date()
-  });
-}, 2000);
