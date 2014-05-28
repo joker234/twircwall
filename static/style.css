@@ -33,6 +33,12 @@ div.irc {
   padding: 10px;
 }
 
+div.preirc {
+  font-family: monospace;
+  margin: 10px;
+  font-size: 14px;
+}
+
 div.irc .ircmessage {
   margin-bottom: 5px;
   font-family: monospace;

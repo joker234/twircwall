@@ -10,6 +10,7 @@
     "jade": "latest",
     "twitter": "latest",
     "irc": "latest",
-    "underscore": "latest"
+    "underscore": "latest",
+    "node-html-encoder": "latest"
   }
 }
