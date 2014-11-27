@@ -10,7 +10,7 @@ var irc = require('irc');
 var _ = require('underscore');
 var Encoder = require('node-html-encoder').Encoder;
 var encoder = new Encoder('entity');
-
+var config = require('./config.js')
 var tweets = [];
 var ircMessages = [];
 
@@ -53,26 +53,39 @@ var newIRCMessage = function(data) {
   ircMessages = ircMessages.slice(ircMessages.length - 50, ircMessages.length);
 };
 
-var t = new twitter({
-  consumer_key: 'hCmZQWXg2AdUK4huoos3VDmPj',
-  consumer_secret: 'uLI12R08mbFonPC7yUu5JLCQudTwS9R8jAdF8KyqqkbWZD2Bts',
-  access_token_key: '75013164-ZcpGYBhKp9hB0uPZVuyEb3oQbMw8XGEvb4bhMZ5MK',
-  access_token_secret: 'bB1BVge6Hstvbi8Hu7ogWLwZMVhY0kFbl1nEaVKro1GZX'
-});
+var t = new twitter(config.twitter.keys);
 
 var starttwitter = function(t) {
   console.log("Starting Twitter");
   t.stream('filter', {
-    track: '#31c3' //,#TeamNiall'
+    track: config.twitter.track
   }, function(stream) {
     stream.on('data', function(data) {
       //console.log(data);
       //console.log("---------------------------")
       //console.log(data.entities);
+
+    var text = data.text;
+
+    if (data.retweeted_status) {
+      text = 'RT @' + data.retweeted_status.user.screen_name + ': ' + data.retweeted_status.text
+      for (var i = 0; i < data.retweeted_status.entities.urls.length; i++) {
+        var url = data.retweeted_status.entities.urls[i];
+        text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
+      }
+    } else {
+      for (var i = 0; i < data.entities.urls.length; i++) {
+        var url = data.entities.urls[i];
+        text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
+      }
+    }
+
+
       if (data.entities.media && data.entities.media[0].type == "photo") {
+        text = text.replace(data.entities.media[0].url, '<a href="' + data.entities.media[0].expanded_url + '" target="_blank">' + data.entities.media[0].display_url +'</a>');
         newTweet({
           'name': data.user.name + ' [@' + data.user.screen_name + ']',
-          'text': data.text,
+          'text': text,
           'profile': data.user.profile_image_url,
           'time': data.created_at,
           'image': {
@@ -84,7 +97,7 @@ var starttwitter = function(t) {
       } else {
         newTweet({
           'name': data.user.name + ' [@' + data.user.screen_name + ']',
-          'text': data.text,
+          'text': text,
           'profile': data.user.profile_image_url,
           'time': data.created_at
         });
@@ -99,8 +112,8 @@ var starttwitter = function(t) {
 starttwitter(t);
 
 
-var client = new irc.Client('chat.freenode.net', 'twitterwall', {
-  channels: ['#31c3']
+var client = new irc.Client(config.irc.net, config.irc.nick, {
+  channels: config.irc.channels
 });
 
 client.addListener('message', function(from, to, message) {
@@ -111,4 +124,4 @@ client.addListener('message', function(from, to, message) {
   });
 });
 
-server.listen(3002);
+server.listen(config.port);

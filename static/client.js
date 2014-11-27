@@ -1,4 +1,4 @@
-var socket = io.connect('http://31c3.gnomus.de');
+var socket = io.connect(window.location.href);
 
 moment.lang('de');
 

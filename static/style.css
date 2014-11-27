@@ -79,6 +79,15 @@ div.twitter .tweet .name, div.twitter .tweet .text {
   margin-left: 60px;
 }
 
+div.twitter .tweet .text a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+div.twitter .tweet .text a:hover {
+  color: #989898;
+}
+
 div.twitter .tweet .image {
   margin-left: auto;
   margin-right: auto;
