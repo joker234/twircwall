@@ -1,4 +1,4 @@
-var socket = io.connect('http://kiffel.net');
+var socket = io.connect('http://31c3.gnomus.de');
 
 moment.lang('de');
 
