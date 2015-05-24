@@ -1,4 +1,4 @@
-var socket = io.connect(window.location.href);
+var socket = io.connect(window.location.origin, {path: window.location.pathname + 'socket.io'})
 
 moment.lang('de');
 
