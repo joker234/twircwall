@@ -11,6 +11,7 @@
     "twitter": "latest",
     "irc": "latest",
     "underscore": "latest",
-    "node-html-encoder": "latest"
+    "node-html-encoder": "latest",
+    "deep-extend": "latest"
   }
 }

@@ -7,6 +7,7 @@ var EventEmitter = require('events').EventEmitter;
 var events = new EventEmitter();
 var twitter = require('twitter');
 var irc = require('irc');
+var extend = require('deep-extend');
 var _ = require('underscore');
 var Encoder = require('node-html-encoder').Encoder;
 var encoder = new Encoder('entity');
@@ -22,8 +23,6 @@ app.use(express.static(path.join(__dirname, '/static')));
 app.get('/', function(req, res) {
   res.render('index');
 });
-
-io.set('log level', 1);
 
 io.sockets.on('connection', function(socket) {
   tweets.forEach(function(tweet) {
@@ -53,7 +52,7 @@ var newIRCMessage = function(data) {
   ircMessages = ircMessages.slice(ircMessages.length - 50, ircMessages.length);
 };
 
-var t = new twitter(config.twitter.keys);
+var t = new twitter(extend({stream_base: 'https://stream.twitter.com/1.1/statuses'}, config.twitter.keys));
 
 var starttwitter = function(t) {
   console.log("Starting Twitter");
@@ -64,7 +63,7 @@ var starttwitter = function(t) {
       //console.log(data);
       //console.log("---------------------------")
       //console.log(data.entities);
-
+    
     var text = data.text;
 
     if (data.retweeted_status) {
