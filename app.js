@@ -8,6 +8,7 @@ var events = new EventEmitter();
 var twitter = require('twitter');
 var irc = require('irc');
 var extend = require('deep-extend');
+var fs = require("fs");
 var _ = require('underscore');
 var Encoder = require('node-html-encoder').Encoder;
 var encoder = new Encoder('entity');
@@ -40,6 +41,19 @@ events.on('twitter', function(data) {
   io.sockets.emit('twitter', data);
 });
 
+var checkwhitelist = function(tweet) {
+  name = tweet.user.screen_name.toLowerCase()
+  if (config.twitter.whitelist) {
+    var whitelist = JSON.parse(fs.readFileSync(config.twitter.whitelist, "utf8"));
+    if (whitelist.enabled) {
+      if (whitelist.whitelist.indexOf(name) < 0 || whitelist.blacklist.indexOf(name) > -1) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 var newTweet = function(data) {
   events.emit('twitter', data);
   tweets.push(data);
@@ -63,6 +77,12 @@ var starttwitter = function(t) {
       //console.log(data);
       //console.log("---------------------------")
       //console.log(data.entities);
+      console.log(data.user.screen_name + ': ' + data.text)
+    
+    if (!checkwhitelist(data)) {
+      console.log("BLOCKED!")
+      return;
+    }
     
     var text = data.text;
 

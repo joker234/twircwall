@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "whitelist": [
+    "handle1_", 
+    "handle2"
+  ], 
+  "blacklist": []
+}
