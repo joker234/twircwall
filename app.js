@@ -125,4 +125,4 @@ client.addListener('message', function(from, to, message) {
   });
 });
 
-server.listen(config.port);
+server.listen(config.port, config.host);
