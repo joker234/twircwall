@@ -57,7 +57,7 @@ var t = new twitter(config.twitter.keys);
 
 var starttwitter = function(t) {
   console.log("Starting Twitter");
-  t.stream('filter', {
+  t.stream('statuses/filter', {
     track: config.twitter.track
   }, function(stream) {
     stream.on('data', function(data) {
