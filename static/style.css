@@ -33,7 +33,7 @@ div.irc {
   padding: 10px;
 }
 
-div.preirc {
+div.pretwitter2 {
   font-family: monospace;
   margin: 10px;
   font-size: 14px;
@@ -44,13 +44,19 @@ div.irc .ircmessage {
   font-family: monospace;
 }
 
+div.twitter2 {
+  float: right;
+  width: 100%;
+  font-size: 20px;
+}
+
 div.twitter {
   float: left;
   width: 50%;
   font-size: 20px;
 }
 
-div.twitter .tweet{
+div.twitter .tweet, div.twitter2 .tweet {
   position: relative;
   margin-bottom: 10px;
   margin-right: 10px;
@@ -59,36 +65,36 @@ div.twitter .tweet{
   border-radius: 4px;
 }
 
-div.twitter .tweet .profile {
+div.twitter .tweet .profile, div.twitter2 .tweet .profile {
   position: absolute;
 }
 
-div.twitter .tweet .time {
+div.twitter .tweet .time, div.twitter2 .tweet .time {
   position: absolute;
   top: 10px;
   right: 10px;
   font-size: 14px;
 }
 
-div.twitter .tweet .name {
+div.twitter .tweet .name, div.twitter2 .tweet .name {
   color: #989898;
   margin-bottom: 5px;
 }
 
-div.twitter .tweet .name, div.twitter .tweet .text {
+div.twitter .tweet .name, div.twitter .tweet .text, div.twitter2 .tweet .name, div.twitter2 .tweet .text {
   margin-left: 60px;
 }
 
-div.twitter .tweet .text a {
+div.twitter .tweet .text a, div.twitter2 .tweet .text a {
   color: #ffffff;
   text-decoration: none;
 }
 
-div.twitter .tweet .text a:hover {
+div.twitter .tweet .text a:hover, div.twitter2 .tweet .text a:hover {
   color: #989898;
 }
 
-div.twitter .tweet .image {
+div.twitter .tweet .image, div.twitter2 .tweet .image {
   margin-left: auto;
   margin-right: auto;
   display: block;

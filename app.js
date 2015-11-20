@@ -12,6 +12,7 @@ var Encoder = require('node-html-encoder').Encoder;
 var encoder = new Encoder('entity');
 var config = require('./config.js')
 var tweets = [];
+var orga_tweets = [];
 var ircMessages = [];
 
 app.set('views', path.join(__dirname, 'views'));
@@ -27,7 +28,10 @@ io.set('log level', 1);
 
 io.sockets.on('connection', function(socket) {
   tweets.forEach(function(tweet) {
-    socket.emit('twitter', tweet);
+    socket.emit('twitter', tweet, config.twitter.orga_follow);
+  });
+  orga_tweets.forEach(function(tweet) {
+    socket.emit('twitter', tweet, config.twitter.orga_follow);
   });
   ircMessages.forEach(function(ircmessage) {
     socket.emit('irc', ircmessage);
@@ -38,13 +42,18 @@ events.on('irc', function(data) {
   io.sockets.emit('irc', data);
 });
 events.on('twitter', function(data) {
-  io.sockets.emit('twitter', data);
+  io.sockets.emit('twitter', data, config.twitter.orga_follow);
 });
 
 var newTweet = function(data) {
-  events.emit('twitter', data);
-  tweets.push(data);
-  tweets = tweets.slice(tweets.length - 30, tweets.length);
+  events.emit('twitter', data, config.twitter.orga_follow);
+  if (data.id == config.twitter.orga_follow) {
+    orga_tweets.push(data);
+    orga_tweets = orga_tweets.slice(orga_tweets.length - 30, orga_tweets.length);
+  } else {
+    tweets.push(data);
+    tweets = tweets.slice(tweets.length - 30, tweets.length);
+  }
 };
 
 var newIRCMessage = function(data) {
@@ -86,6 +95,7 @@ var starttwitter = function(t) {
         text = text.replace(data.entities.media[0].url, '<a href="' + data.entities.media[0].expanded_url + '" target="_blank">' + data.entities.media[0].display_url +'</a>');
         newTweet({
           'name': data.user.name + ' [@' + data.user.screen_name + ']',
+          'id': data.user.id_str,
           'text': text,
           'profile': data.user.profile_image_url,
           'time': data.created_at,
@@ -98,6 +108,7 @@ var starttwitter = function(t) {
       } else {
         newTweet({
           'name': data.user.name + ' [@' + data.user.screen_name + ']',
+          'id': data.user.id_str,
           'text': text,
           'profile': data.user.profile_image_url,
           'time': data.created_at

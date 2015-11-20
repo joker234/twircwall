@@ -2,8 +2,9 @@ var socket = io.connect(window.location.href);
 
 moment.lang('de');
 
-var renderTweet = function(data) {
+var renderTweet = function(data,orga_follow) {
 	var tweets = $('.twitter');
+	var tweets2 = $('.twitter2');
 	var tweet = $('<div>').addClass('tweet');
 
 	tweet.append($('<img>').addClass('profile').attr('src', data.profile));
@@ -18,7 +19,14 @@ var renderTweet = function(data) {
 		}));
 	}
 
-	tweets.prepend(tweet);
+	if (data.id == orga_follow) {
+		tweets2.prepend(tweet);
+		//console.log("1: "+data.id);
+	}
+	else {
+		tweets.prepend(tweet);
+		//console.log("2: "+data.id);
+	}
 
 	for (var i = 30; i <= $(".tweet").length; i++) {
 		var item = $(".tweet:nth-child(" + i + ")");
@@ -56,6 +64,6 @@ socket.on('irc', function(data) {
 	renderIRCMessage(data);
 });
 
-socket.on('twitter', function(data) {
-	renderTweet(data);
+socket.on('twitter', function(data,orga_follow) {
+	renderTweet(data,orga_follow);
 });
