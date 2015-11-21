@@ -84,9 +84,11 @@ var starttwitter = function(t) {
         text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
       }
     } else {
-      for (var i = 0; i < data.entities.urls.length; i++) {
-        var url = data.entities.urls[i];
-        text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
+      if (data.entities.urls != undefined) {
+        for (var i = 0; i < data.entities.urls.length; i++) {
+          var url = data.entities.urls[i];
+          text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
+        }
       }
     }
 
