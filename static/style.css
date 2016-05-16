@@ -79,6 +79,7 @@ div.twitter .tweet .time, div.twitter2 .tweet .time {
 div.twitter .tweet .name, div.twitter2 .tweet .name {
   color: #989898;
   margin-bottom: 5px;
+  margin-right: 100px;
 }
 
 div.twitter .tweet .name, div.twitter .tweet .text, div.twitter2 .tweet .name, div.twitter2 .tweet .text {

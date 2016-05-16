@@ -10,7 +10,9 @@ var renderTweet = function(data,orga_follow) {
 	tweet.append($('<img>').addClass('profile').attr('src', data.profile));
 	tweet.append($('<div>').addClass('name').html(data.name));
 	tweet.append($('<div>').addClass('text').html(data.text));
-	tweet.append($('<div>').addClass('time').html(moment(data.time).format('HH:mm')));
+//	tweet.append($('<div>').addClass('time').html(moment(data.time).format('HH:mm')));
+	tweet.append($('<div>').addClass('time').html(moment(data.time).fromNow()));
+	tweet.attr('datatime', data.time);
 
 	if (data.image) {
 		tweet.append($('<img>').addClass('image').attr('src', data.image.url).css({
@@ -49,6 +51,13 @@ var renderIRCMessage = function(data) {
 		item.remove();
 	}
 };
+
+setInterval(function() {
+	$('.tweet').each(function(tweet) {
+		//console.log($(this).attr('datatime'));
+		$(this).find('.time').html(moment($(this).attr('datatime')).fromNow());
+	});
+}, 1000);
 
 setInterval(function() {
 	var m = moment();
