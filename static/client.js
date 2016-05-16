@@ -7,7 +7,7 @@ var renderTweet = function(data,orga_follow) {
 	var tweets2 = $('.twitter2');
 	var tweet = $('<div>').addClass('tweet');
 
-	tweet.append($('<img>').addClass('profile').attr('src', data.profile));
+	tweet.append($('<img>').addClass('profile').attr('src', data.profile.replace(/^http:\/\//i, 'https://')));
 	tweet.append($('<div>').addClass('name').html(data.name));
 	tweet.append($('<div>').addClass('text').html(data.text));
 //	tweet.append($('<div>').addClass('time').html(moment(data.time).format('HH:mm')));
