@@ -62,6 +62,55 @@ var newIRCMessage = function(data) {
   ircMessages = ircMessages.slice(ircMessages.length - 50, ircMessages.length);
 };
 
+var processTweet = function(data) {
+      //console.log(data);
+      //console.log("---------------------------");
+      //console.log(data.entities);
+      //console.log("===========================");
+      var text = data.text;
+
+
+      if (data.retweeted_status) {
+        text = 'RT @' + data.retweeted_status.user.screen_name + ': ' + data.retweeted_status.text
+          for (var i = 0; i < data.retweeted_status.entities.urls.length; i++) {
+            var url = data.retweeted_status.entities.urls[i];
+            text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
+          }
+      } else {
+        if (data.entities.urls != undefined) {
+          for (var i = 0; i < data.entities.urls.length; i++) {
+            var url = data.entities.urls[i];
+            text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
+          }
+        }
+      }
+
+
+      if (data.entities.media && data.entities.media[0].type == "photo") {
+        text = text.replace(data.entities.media[0].url, '<a href="' + data.entities.media[0].expanded_url + '" target="_blank">' + data.entities.media[0].display_url +'</a>');
+        newTweet({
+          'name': data.user.name + ' [@' + data.user.screen_name + ']',
+          'id': data.user.id_str,
+          'text': text,
+          'profile': data.user.profile_image_url,
+          'time': data.created_at,
+          'image': {
+            'url': data.entities.media[0].media_url,
+            'height': data.entities.media[0].sizes.small.h,
+            'width': data.entities.media[0].sizes.small.w
+          }
+        });
+      } else {
+        newTweet({
+          'name': data.user.name + ' [@' + data.user.screen_name + ']',
+          'id': data.user.id_str,
+          'text': text,
+          'profile': data.user.profile_image_url,
+          'time': data.created_at
+        });
+      }
+};
+
 var t = new twitter(config.twitter.keys);
 
 var recenttwitter = function(t) {
@@ -70,106 +119,14 @@ var recenttwitter = function(t) {
   // Orgatweets
   t.get('statuses/user_timeline', {user_id: config.twitter.orga_follow}, function(error, tweets, response){
     for (var j = tweets.length-1; j >= 0; j--) {
-      var data = tweets[j];
-      //console.log(data);
-      //console.log("---------------------------");
-      //console.log(data.entities);
-      //console.log("===========================");
-      var text = data.text;
-
-
-      if (data.retweeted_status) {
-        text = 'RT @' + data.retweeted_status.user.screen_name + ': ' + data.retweeted_status.text
-          for (var i = 0; i < data.retweeted_status.entities.urls.length; i++) {
-            var url = data.retweeted_status.entities.urls[i];
-            text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
-          }
-      } else {
-        if (data.entities.urls != undefined) {
-          for (var i = 0; i < data.entities.urls.length; i++) {
-            var url = data.entities.urls[i];
-            text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
-          }
-        }
-      }
-
-
-      if (data.entities.media && data.entities.media[0].type == "photo") {
-        text = text.replace(data.entities.media[0].url, '<a href="' + data.entities.media[0].expanded_url + '" target="_blank">' + data.entities.media[0].display_url +'</a>');
-        newTweet({
-          'name': data.user.name + ' [@' + data.user.screen_name + ']',
-          'id': data.user.id_str,
-          'text': text,
-          'profile': data.user.profile_image_url,
-          'time': data.created_at,
-          'image': {
-            'url': data.entities.media[0].media_url,
-            'height': data.entities.media[0].sizes.small.h,
-            'width': data.entities.media[0].sizes.small.w
-          }
-        });
-      } else {
-        newTweet({
-          'name': data.user.name + ' [@' + data.user.screen_name + ']',
-          'id': data.user.id_str,
-          'text': text,
-          'profile': data.user.profile_image_url,
-          'time': data.created_at
-        });
-      }
+	  processTweet(tweets[j]);
     }
   });
 
-  // #tweets
+  // Hashtag-Tweets
   t.get('search/tweets', {q: config.twitter.track}, function(error, tweets, response){
     for (var j = tweets.statuses.length-1; j >= 0; j--) {
-      var data = tweets.statuses[j];
-      //console.log(data);
-      //console.log("---------------------------");
-      //console.log(data.entities);
-      //console.log("===========================");
-      var text = data.text;
-
-
-      if (data.retweeted_status) {
-        text = 'RT @' + data.retweeted_status.user.screen_name + ': ' + data.retweeted_status.text
-          for (var i = 0; i < data.retweeted_status.entities.urls.length; i++) {
-            var url = data.retweeted_status.entities.urls[i];
-            text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
-          }
-      } else {
-        if (data.entities.urls != undefined) {
-          for (var i = 0; i < data.entities.urls.length; i++) {
-            var url = data.entities.urls[i];
-            text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
-          }
-        }
-      }
-
-
-      if (data.entities.media && data.entities.media[0].type == "photo") {
-        text = text.replace(data.entities.media[0].url, '<a href="' + data.entities.media[0].expanded_url + '" target="_blank">' + data.entities.media[0].display_url +'</a>');
-        newTweet({
-          'name': data.user.name + ' [@' + data.user.screen_name + ']',
-          'id': data.user.id_str,
-          'text': text,
-          'profile': data.user.profile_image_url,
-          'time': data.created_at,
-          'image': {
-            'url': data.entities.media[0].media_url,
-            'height': data.entities.media[0].sizes.small.h,
-            'width': data.entities.media[0].sizes.small.w
-          }
-        });
-      } else {
-        newTweet({
-          'name': data.user.name + ' [@' + data.user.screen_name + ']',
-          'id': data.user.id_str,
-          'text': text,
-          'profile': data.user.profile_image_url,
-          'time': data.created_at
-        });
-      }
+      processTweet(tweets.statuses[j]);
     }
   });
 }
@@ -183,53 +140,7 @@ var starttwitter = function(t) {
     follow: config.twitter.follow
   }, function(stream) {
     stream.on('data', function(data) {
-      //console.log(data);
-      //console.log("---------------------------")
-      //console.log(data.entities);
-      //console.log("===========================");
-
-
-    var text = data.text;
-
-    if (data.retweeted_status) {
-      text = 'RT @' + data.retweeted_status.user.screen_name + ': ' + data.retweeted_status.text
-      for (var i = 0; i < data.retweeted_status.entities.urls.length; i++) {
-        var url = data.retweeted_status.entities.urls[i];
-        text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
-      }
-    } else {
-      if (data.entities.urls != undefined) {
-        for (var i = 0; i < data.entities.urls.length; i++) {
-          var url = data.entities.urls[i];
-          text = text.replace(url.url, '<a href="' + url.expanded_url + '" target="_blank">' + url.display_url +'</a>');
-        }
-      }
-    }
-
-
-      if (data.entities.media && data.entities.media[0].type == "photo") {
-        text = text.replace(data.entities.media[0].url, '<a href="' + data.entities.media[0].expanded_url + '" target="_blank">' + data.entities.media[0].display_url +'</a>');
-        newTweet({
-          'name': data.user.name + ' [@' + data.user.screen_name + ']',
-          'id': data.user.id_str,
-          'text': text,
-          'profile': data.user.profile_image_url,
-          'time': data.created_at,
-          'image': {
-            'url': data.entities.media[0].media_url,
-            'height': data.entities.media[0].sizes.small.h,
-            'width': data.entities.media[0].sizes.small.w
-          }
-        });
-      } else {
-        newTweet({
-          'name': data.user.name + ' [@' + data.user.screen_name + ']',
-          'id': data.user.id_str,
-          'text': text,
-          'profile': data.user.profile_image_url,
-          'time': data.created_at
-        });
-      }
+		processTweet(data);
     });
     stream.on('end', function() {
       starttwitter(t);
