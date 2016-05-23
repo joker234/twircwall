@@ -117,14 +117,14 @@ var recenttwitter = function(t) {
   console.log("Getting recent Twitter Tweets");
 
   // Orgatweets
-  t.get('statuses/user_timeline', {user_id: config.twitter.orga_follow}, function(error, tweets, response){
+  t.get('statuses/user_timeline', {user_id: config.twitter.orga_follow, count: 50}, function(error, tweets, response){
     for (var j = tweets.length-1; j >= 0; j--) {
 	  processTweet(tweets[j]);
     }
   });
 
   // Hashtag-Tweets
-  t.get('search/tweets', {q: config.twitter.track}, function(error, tweets, response){
+  t.get('search/tweets', {q: config.twitter.track, count: 50}, function(error, tweets, response){
     for (var j = tweets.statuses.length-1; j >= 0; j--) {
       processTweet(tweets.statuses[j]);
     }
